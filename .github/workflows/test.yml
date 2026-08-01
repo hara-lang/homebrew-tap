@@ -1,0 +1,29 @@
+name: Test formulas
+
+on:
+  push:
+    paths:
+      - 'Formula/**'
+      - '.github/workflows/test.yml'
+  pull_request:
+    paths:
+      - 'Formula/**'
+      - '.github/workflows/test.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-13, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Homebrew/actions/setup-homebrew@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: brew test-bot --only-cleanup-before
+      - run: brew test-bot --only-setup
+      - run: brew test-bot --only-tap-syntax
+      - run: brew test-bot --only-formulae
