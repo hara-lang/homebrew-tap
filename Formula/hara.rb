@@ -1,15 +1,27 @@
 class Hara < Formula
-  desc "Symbolic programming language and portable AST kernel"
+  desc "Programmable runtime-neutral kernel and HAL CLI"
   homepage "https://www.hara-lang.org"
-  url "https://github.com/hara-lang/hara/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "56b763d4c39d4e8ecfb0cb2eeca80fcebae1b3ab3a5299862c2619bc7bc5317f"
+  version "0.1.4"
   license "EPL-2.0"
-  head "https://github.com/hara-lang/hara.git", branch: "main"
 
-  depends_on "rust" => :build
+  on_macos do
+    if Hardware::CPU.arm?
+      url "https://github.com/hara-lang/hara/releases/download/v0.1.4/hara-rust-v0.1.4-aarch64-apple-darwin.tar.gz"
+      sha256 "232f5b92e844bf497a174e2f928f776049b2943842514c117758a37f85519302"
+    else
+      url "https://github.com/hara-lang/hara/releases/download/v0.1.4/hara-rust-v0.1.4-x86_64-apple-darwin.tar.gz"
+      sha256 "3dc283512e2bfb2b19b3a061a9aa07456627afccbc150d684b92fddff1e177c1"
+    end
+  end
+
+  on_linux do
+    depends_on arch: :x86_64
+    url "https://github.com/hara-lang/hara/releases/download/v0.1.4/hara-rust-v0.1.4-x86_64-unknown-linux-gnu.tar.gz"
+    sha256 "aa5132c3efac13ab85d94fa8d6ffa6874f6479d124a90546bd5e2de15f8dcce2"
+  end
 
   def install
-    system "cargo", "install", *std_cargo_args(path: "rust")
+    bin.install "hara"
   end
 
   test do
